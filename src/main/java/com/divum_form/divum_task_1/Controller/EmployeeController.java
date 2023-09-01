@@ -6,10 +6,12 @@ import com.divum_form.divum_task_1.Repository.EmployeeRepository;
 import com.divum_form.divum_task_1.Repository.RepoService.EmpRepoService;
 import com.sun.net.httpserver.HttpsServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -24,7 +26,7 @@ public class EmployeeController{
 
     @GetMapping("/get")
     ResponseEntity<List<Employee>> getAllEmployee() {
-        List<Employee> employees = employeeRepository.findAll();
+        List<Employee> employees = employeeRepository.findAll(Sort.by("updatedDate").descending());
         System.out.println(employees);
         return ResponseEntity.ok(employees);
     }
@@ -34,6 +36,7 @@ public class EmployeeController{
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee){
         Employee employee1 = empRepoService.findByEmail(employee.getEmail());
         if (employee1 == null) {
+            employee.setUpdatedDate(new Date());
             return ResponseEntity.ok(employeeRepository.save(employee));
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,6 +34,7 @@ public class Employee {
     @Column(name = "dob")
     private String dob;
 
-
+    @Column(name = "updatedDate")
+    private Date updatedDate;
     }
 
