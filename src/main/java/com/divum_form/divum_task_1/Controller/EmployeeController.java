@@ -6,6 +6,8 @@ import com.divum_form.divum_task_1.Repository.EmployeeRepository;
 import com.divum_form.divum_task_1.Repository.RepoService.EmpRepoService;
 import com.sun.net.httpserver.HttpsServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +26,16 @@ public class EmployeeController{
     @Autowired
     private EmpRepoService empRepoService;
 
+    @GetMapping("/get10/{offset}/{pageSize}")
+    Page<Employee> getFirstTenEmployees(@PathVariable("offset") int offset,@PathVariable("pageSize") int pageSize) {
+        return employeeRepository.findAll(PageRequest.of(offset, pageSize).withSort(Sort.by(Sort.Direction.DESC, "updatedDate")));
+    }
+
     @GetMapping("/get")
     ResponseEntity<List<Employee>> getAllEmployee() {
         List<Employee> employees = employeeRepository.findAll(Sort.by("updatedDate").descending());
+        int count = 0;
+
         System.out.println(employees);
         return ResponseEntity.ok(employees);
     }
@@ -65,6 +74,7 @@ public class EmployeeController{
         updatedEmployee.setAddress(updatedData.getAddress());
         updatedEmployee.setPhoneNumber(updatedData.getPhoneNumber());
         updatedEmployee.setDob(updatedData.getDob());
+        updatedEmployee.setUpdatedDate(new Date());
 
         employeeRepository.save(updatedEmployee);
 
