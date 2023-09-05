@@ -32,10 +32,8 @@ public class EmployeeController{
     }
 
     @GetMapping("/get")
-    ResponseEntity<List<Employee>> getAllEmployee() {
+    public ResponseEntity<List<Employee>> getAllEmployee() {
         List<Employee> employees = employeeRepository.findAll(Sort.by("updatedDate").descending());
-        int count = 0;
-
         System.out.println(employees);
         return ResponseEntity.ok(employees);
     }
@@ -55,7 +53,8 @@ public class EmployeeController{
     //
 //    //Get employee by id
     @GetMapping("/email={email}")
-    public ResponseEntity<Employee> getEmployeeByEmail(@PathVariable String email) {Employee employee = empRepoService.findByEmail(email);
+    public ResponseEntity<Employee> getEmployeeByEmail(@PathVariable String email) {
+        Employee employee = empRepoService.findByEmail(email);
         if(employee != null) {
             return ResponseEntity.ok(employee);
         }

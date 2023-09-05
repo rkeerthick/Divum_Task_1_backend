@@ -1,13 +1,78 @@
 package com.divum_form.divum_task_1;
 
+import com.divum_form.divum_task_1.Controller.EmployeeController;
+import com.divum_form.divum_task_1.Model.Employee;
+import com.divum_form.divum_task_1.Repository.EmployeeRepository;
+import com.divum_form.divum_task_1.Repository.RepoService.EmpRepoService;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @SpringBootTest
 class DivumTask1ApplicationTests {
 
+    @InjectMocks
+    private EmployeeController employeeController;
+
+    @Mock
+    private EmployeeRepository employeeRepository;
+
+    @Mock
+    private EmpRepoService empRepoService;
+
     @Test
-    void contextLoads() {
+    public void getAllTest() {
+        List<Employee> employees = new ArrayList<>();
+//        Mockito.when(employeeRepository.findAll()).thenReturn(employees);
+        ResponseEntity<List<Employee>> response = employeeController.getAllEmployee();
+        System.out.println(employees);
+        Assert.assertEquals(HttpStatus.OK,response.getStatusCode());
+        Assert.assertEquals(response.getBody().size(),employees.size());
+    }
+
+    @Test
+    public void getByEmailTest() {
+        Employee employees = new Employee("kee","kee","kee@gmail.com","23456789","kuhad","2345678",new Date());
+        Mockito.when(empRepoService.findByEmail(anyString())).thenReturn(employees);
+        ResponseEntity<Employee> response = employeeController.getEmployeeByEmail(anyString());
+        Assert.assertEquals(HttpStatus.OK,response.getStatusCode());
+    }
+
+    @Test
+    public void createEmployeeTest() {
+
+        Employee employees = new Employee("kee","kee","kee@gmail.com","23456789","kuhad","2345678",new Date());
+
+        Mockito.when(employeeRepository.save(employees)).thenReturn(employees);
+        ResponseEntity<Employee> response = employeeController.createEmployee(employees);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void updateEmployeeTest() {
+
+        Employee employees = new Employee("kee","kee","kee@gmail.com","23456789","kuhad","2345678",new Date());
+
+//        Mockito.when(employeeRepository.save(employees)).thenReturn(employees);
+//        ResponseEntity<Employee> response = employeeController.createEmployee(employees);
+//        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Mockito.when(empRepoService.findByEmail(anyString())).thenReturn(employees);
+        ResponseEntity<Employee> response = employeeController.updateEmployeeByEmail(employees.getEmail(), employees);
+        Assert.assertEquals(HttpStatus.OK,response.getStatusCode());
+
     }
 
 }
