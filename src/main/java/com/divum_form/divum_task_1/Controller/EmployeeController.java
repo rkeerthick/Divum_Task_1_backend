@@ -82,11 +82,14 @@ public class EmployeeController{
     //
 //    //Build delete api
     @DeleteMapping("/delete/email={email}")
-    public ResponseEntity<HttpStatus> deleteEmployeeById(@PathVariable String email) {
+    public String deleteEmployeeById(@PathVariable String email) {
 //        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee not exist with id = " + id));
         Employee employee = empRepoService.findByEmail(email);
+        if(employee == null) {
+            return "not exist";
+        }
         employeeRepository.delete(employee);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return "deleted";
     }
 
 }
