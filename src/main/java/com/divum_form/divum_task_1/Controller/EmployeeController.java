@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -25,6 +27,10 @@ public class EmployeeController{
 
     @Autowired
     private EmpRepoService empRepoService;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
 
     @GetMapping("/get10/{offset}/{pageSize}")
     Page<Employee> getFirstTenEmployees(@PathVariable("offset") int offset,@PathVariable("pageSize") int pageSize) {
@@ -90,6 +96,68 @@ public class EmployeeController{
         }
         employeeRepository.delete(employee);
         return "deleted";
+    }
+
+    @GetMapping("/sendDeleteMail/{email}")
+    public String sendUpdateMail(@PathVariable String email)
+    {
+        // Try block to check for exceptions
+        try {
+
+            // Creating a simple mail message
+            SimpleMailMessage mailMessage
+                    = new SimpleMailMessage();
+            System.out.println();
+            // Setting up necessary details
+            mailMessage.setFrom("20f223@kce.ac.in");
+            mailMessage.setTo(email);
+            mailMessage.setSubject("User Deleted!!!");
+            mailMessage.setText("Your account has been successfully removed...");
+
+            // Sending the mail
+            javaMailSender.send(mailMessage);
+            return "User deleted Successfully...";
+        }
+
+        // Catch block to handle the exceptions
+        catch (Exception e) {
+            return e+"";
+        }
+    }
+
+    @GetMapping("/sendAddMail/{email}")
+    public String sendAddMail(@PathVariable String email, @RequestBody Employee employee)
+    {
+        // Try block to check for exceptions
+        try {
+
+            // Creating a simple mail message
+            SimpleMailMessage mailMessage
+                    = new SimpleMailMessage();
+            System.out.println();
+            // Setting up necessary details
+            mailMessage.setFrom("20f223@kce.ac.in");
+            mailMessage.setTo(email);
+            mailMessage.setSubject("Your account has been created successfully!!!");
+            mailMessage.setText("" +
+                    "Your account has been successfully created...\n" +
+                    "The details are,\nFirst Name : "+employee.getFirstName()+
+                    "\nLast Name : " + employee.getLastName() +
+                    "\nEmail : " + employee.getEmail() +
+                    "\nPhone Number : " + employee.getPhoneNumber() +
+                    "\nDOB : " + employee.getDob() +
+                    "\nAddress : " + employee.getAddress()
+            );
+
+            // Sending the mail
+            javaMailSender.send(mailMessage);
+            return "User added Successfully...";
+        }
+
+        // Catch block to handle the exceptions
+        catch (Exception e) {
+            return e+"";
+        }
     }
 
 }

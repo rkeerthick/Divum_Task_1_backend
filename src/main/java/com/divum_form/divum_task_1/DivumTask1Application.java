@@ -1,6 +1,5 @@
 package com.divum_form.divum_task_1;
 
-import com.divum_form.divum_task_1.Model.Employee;
 import com.divum_form.divum_task_1.Repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
